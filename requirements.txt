@@ -1,0 +1,8 @@
+qdrant_client
+bs4
+mistralai
+nltk
+scikit-learn
+lxml
+streamlit
+python-dotenv
