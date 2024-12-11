@@ -23,7 +23,7 @@ First set up a Python package environment (using `venv` or `conda` for instance)
 Then install the requirements.
 
 ```
-pip install r requirements.txt
+pip install -r requirements.txt
 ```
 
 The application uses services requiring API keys. A `.env` file with the follwing syntax is required:
