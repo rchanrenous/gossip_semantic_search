@@ -49,7 +49,7 @@ class Encoder:
             return [data.embedding for data in response.data]
         else:
             embedding = self.model.encode(L_str)
-            return embedding
+            return embedding.tolist()
         
 
 
@@ -111,7 +111,7 @@ def main():
     encoder = Encoder(api_key=MISTRAL_AI_API_KEY)
     encoder = Encoder()
     L_embeddings = encoder.encode(L_article)
-    print(L_embeddings.shape, type(L_embeddings), len(L_embeddings[0]))
+    print(type(L_embeddings), len(L_embeddings[0]))
     L_sentences = encoder.get_sentences(L_article[0])
     L_sentence_embeddings = encoder.encode_sentences(L_article[0])
     print(len(L_sentence_embeddings), len(L_sentence_embeddings[0]))
