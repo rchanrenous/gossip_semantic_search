@@ -1,4 +1,4 @@
-#from sentence_transformers import SentenceTransformer
+from sentence_transformers import SentenceTransformer
 from mistralai import Mistral
 from scrap import ArticleScrapper
 from typing import List
@@ -18,15 +18,18 @@ class Encoder:
     '''
     
 
-    def __init__(self, api_key: str, model_name: str='mistral-embed'):
+    def __init__(self, api_key: str=None, model_name: str='sentence-transformers/all-MiniLM-L6-v2'):
         '''
         Initalize attributes.
         '''
 
-        self.model_name = model_name
-        self.api_key = api_key
-        #self.model = SentenceTransformer(self.model_name)
-        self.mistral_client = Mistral(api_key=api_key)
+        if api_key is not None:
+            self.model_name = 'mistral-embed'
+            self.api_key = api_key
+            self.mistral_client = Mistral(api_key=api_key)
+        else:
+            self.api_key = None
+            self.model = SentenceTransformer(model_name)
     
 
     def encode(self, L_str: List[str]):
@@ -40,10 +43,14 @@ class Encoder:
             embedding: numpy array containing the embedding
         '''
 
-        #embedding = self.model.encode(s)
-        response = self.mistral_client.embeddings.create(model=self.model_name,
+        if self.api_key is not None:
+            response = self.mistral_client.embeddings.create(model=self.model_name,
                                                     inputs=L_str)
-        return [data.embedding for data in response.data]
+            return [data.embedding for data in response.data]
+        else:
+            embedding = self.model.encode(L_str)
+            return embedding
+        
 
 
     def get_sentences(self, s: str) -> List[str]:
@@ -102,8 +109,9 @@ def main():
     L_article.append(scrapper.scrap("https://www.public.fr/une-etude-revele-la-couleur-des-yeux-des-personnes-les-plus-intelligentes-mythe-ou-realite"))
     L_article.append(scrapper.scrap(url="https://vsd.fr/22837-recensement-etes-vous-fils-de-resistant/"))
     encoder = Encoder(api_key=MISTRAL_AI_API_KEY)
+    encoder = Encoder()
     L_embeddings = encoder.encode(L_article)
-    print(type(L_embeddings), len(L_embeddings[0]))
+    print(L_embeddings.shape, type(L_embeddings), len(L_embeddings[0]))
     L_sentences = encoder.get_sentences(L_article[0])
     L_sentence_embeddings = encoder.encode_sentences(L_article[0])
     print(len(L_sentence_embeddings), len(L_sentence_embeddings[0]))
