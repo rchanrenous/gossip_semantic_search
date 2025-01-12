@@ -14,10 +14,11 @@ def setup():
     MISTRAL_AI_API_KEY = getenv("MISTRAL_AI_API_KEY")
 
     scrapper = ArticleScrapper()
-    encoder = Encoder(api_key=MISTRAL_AI_API_KEY)
+    #encoder = Encoder(api_key=MISTRAL_AI_API_KEY)
+    encoder = Encoder()
     embeddings = Embeddings(qdrant_url=QDRANT_URL,
                                 api_key=QDRANT_API_KEY,
-                                collection_name="gossip_articles_embeddings",
+                                collection_name="gossip_articles_embeddings_sentence_transformers",
                                 scrapper=scrapper,
                                 encoder=encoder)
     return embeddings

@@ -45,7 +45,7 @@ class Embeddings:
         if not self.qdrant_client.collection_exists(self.collection_name):
             print("Creating collection:", self.collection_name)
             self.qdrant_client.create_collection(collection_name=self.collection_name,
-                                vectors_config=VectorParams(size=1024,
+                                vectors_config=VectorParams(size=384,
                                                             distance=Distance.DOT))
         else:
             print("Collection exists:", self.collection_name)
@@ -75,13 +75,15 @@ class Embeddings:
         url_file_name_ignored = f"{url_file_name[:url_file_name.find('.')]}_ignored.csv"
         if isfile(url_file_name_ignored):
             with open(url_file_name_ignored, "r") as f_ignored:
-                nb_not_inserted += len(f_ignored.readlines())
+                nb_ignored = len(f_ignored.readlines())
+                nb_not_inserted += nb_ignored
                 print("\tAccounting for the", nb_ignored, "ignored files")
         # count the number of files whose resource is not accessible anymore (410 error)
         url_file_410_error = f"{url_file_name[:url_file_name.find('.')]}_http_error_410.csv"
         if isfile(url_file_410_error):
             with open(url_file_410_error, "r") as f_410:
-                nb_not_inserted += len(f_410.readlines())
+                nb_410_error = len(f_410.readlines())
+                nb_not_inserted += nb_410_error
                 print("\tAccounting for the", nb_410_error, "410 error files")
         # return the total count
         return nb_not_inserted
