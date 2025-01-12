@@ -6,3 +6,4 @@ scikit-learn
 lxml
 streamlit
 python-dotenv
+sentence-transformers
